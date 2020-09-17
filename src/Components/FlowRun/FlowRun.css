@@ -1,0 +1,25 @@
+.timer-value {
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.timer-value-label {
+	color: #fff;
+	font-size: 20px;
+	letter-spacing: 1px;
+	font-size: 300;
+	font-weight: 300;
+	margin-bottom: 10px;
+	text-transform: uppercase;
+}
+
+.timer-value-input input {
+	width: 60px;
+	height: 60px;
+	background: rgba(0, 0, 0, 0.3);
+	outline: 0;
+	border: 1px solid limegreen;
+	color: #fff;
+	font-size: 30px;
+	text-align: center;
+}

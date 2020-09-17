@@ -1,0 +1,24 @@
+.timer-controls {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+}
+
+.timer-controls div {
+	width: 60px;
+	height: 60px;
+	color: #fff;
+}
+
+.timer-controls div img {
+	max-width: 100%;
+	height: auto;
+	cursor: pointer;
+	border: 1px solid transparent;
+}
+
+.timer-controls div img:hover {
+	border: 1px solid limegreen;
+	border-radius: 50%;
+}
