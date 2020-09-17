@@ -9,6 +9,8 @@ export default class App extends Component {
 	state = {
 		timer: '00 : 00 : 00',
 		flowRun: 30,
+		remainTimeInSec: 0,
+		timerInterval: null
 	};
 
 	onChangeFlowRun = (event) => {
@@ -30,24 +32,27 @@ export default class App extends Component {
 		};
 	}
 
-	getHours = (minutes) => {
-		if (minutes % 60 === 0) {
-			return this.setLeadingZero(minutes / 60)
+	getHours = (seconds) => {
+		const timeInMin = Math.floor(seconds / 60);
+		if (timeInMin % 60 === 0) {
+			return this.setLeadingZero(timeInMin / 60)
 		}
 
-		const remainder = minutes % 60;
-		const hoursValue = (minutes - remainder) / 60;
+		const remainder = timeInMin % 60;
+		const hoursValue = (timeInMin - remainder) / 60;
 		return this.setLeadingZero(hoursValue);
 	}
 
-	getRemainderMinutes = (minutes) => {
-		const remainder = minutes % 60;
-		return Math.floor(this.setLeadingZero(remainder));
+	getRemainderMinutes = (seconds) => {
+		const timeInMin = Math.floor(seconds / 60);
+		const remainder = timeInMin % 60;
+		return this.setLeadingZero(Math.floor(remainder));
 	}
 
 	getSeconds = (seconds) => {
-		const remainder = seconds % 3600;
-		return Math.floor(this.setLeadingZero(remainder));
+		const fullPart = Math.floor(seconds / 60);
+		const remainder = seconds - fullPart * 60;
+		return this.setLeadingZero(remainder);
 	}
 
 	setLeadingZero = (time) => {
@@ -58,14 +63,32 @@ export default class App extends Component {
 	}
 
 	startTimer = () => {
-		let flowRunInMs = this.state.flowRun * 60 * 1000;
-		setInterval(() => {
-			flowRunInMs -= 1000;
-			const hours = this.getHours(flowRunInMs / 1000 / 60);
-			const minutes = this.getRemainderMinutes(flowRunInMs / 1000 / 60);
-			const seconds = this.getSeconds(flowRunInMs / 1000);
+		let timeInSec = this.state.flowRun * 60;
+		this.setState({ remainTimeInSec: timeInSec });
+		const intervalId = setInterval(() => {
+			timeInSec -= 1;
+			this.setState({ remainTimeInSec: timeInSec });
+			const hours = this.getHours(timeInSec);
+			const minutes = this.getRemainderMinutes(timeInSec);
+			const seconds = this.getSeconds(timeInSec);
 			this.setState({ timer: `${hours} : ${minutes} : ${seconds}` });
+
+			if (timeInSec === 0) {
+				this.stopTimer();
+			}
 		}, 1000);
+
+		this.setState({ timerInterval: intervalId })
+	};
+
+	stopTimer = () => {
+		clearInterval(this.state.timerInterval);
+		this.setState({ timer: '00 : 00 : 00', timerInterval: null, remainTimeInSec: 0 });
+	};
+
+	pauseTimer = () => {
+		clearInterval(this.state.timerInterval);
+		this.setState({ timerInterval: null });
 	}
 
 	render() {
@@ -81,7 +104,10 @@ export default class App extends Component {
 							checkIsFlowRunValueValid={this.checkIsFlowRunValueValid} />
 					</div>
 
-					<TimerControls startTimer={this.startTimer} />
+					<TimerControls
+						startTimer={this.startTimer}
+						stopTimer={this.stopTimer}
+						pauseTimer={this.pauseTimer} />
 
 					<Timer timer={this.state.timer} />
 				</div>
