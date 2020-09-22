@@ -4,13 +4,19 @@ import Blackground from './Components/Blackground/Blackground';
 import FlowRun from './Components/FlowRun/FlowRun';
 import TimerControls from './Components/TimerControls/TimerControls';
 import Timer from './Components/Timer/Timer';
+import Notification from './Components/Notification/Notification';
 
 export default class App extends Component {
 	state = {
 		timer: '00 : 00 : 00',
 		flowRun: 30,
 		remainTimeInSec: 0,
-		timerInterval: null
+		timerInterval: null,
+		notificationData: {
+			isActive: false,
+			message: '',
+			type: null
+		}
 	};
 
 	onChangeFlowRun = (event) => {
@@ -63,8 +69,20 @@ export default class App extends Component {
 	}
 
 	startTimer = () => {
-		let timeInSec = this.state.flowRun * 60;
-		this.setState({ remainTimeInSec: timeInSec });
+		if (this.state.timerInterval && this.state.remainTimeInSec) {
+			this.setState({ notificationData: { isActive: true, message: 'Timer already started', type: 'info' } });
+			this.clearNotificationMessage();
+			return;
+		}
+
+		let timeInSec;
+		if (this.state.remainTimeInSec) {
+			timeInSec = this.state.remainTimeInSec;
+		} else {
+			timeInSec = this.state.flowRun * 60;
+			this.setState({ remainTimeInSec: timeInSec });
+		};
+
 		const intervalId = setInterval(() => {
 			timeInSec -= 1;
 			this.setState({ remainTimeInSec: timeInSec });
@@ -76,6 +94,9 @@ export default class App extends Component {
 
 			if (timeInSec === 0) {
 				this.stopTimer();
+				window.document.title = 'Go to the break man!';
+				this.setState({ notificationData: { isActive: true, message: 'Job well done dude!', type: null } });
+				this.clearNotificationMessage();
 			}
 		}, 1000);
 
@@ -93,10 +114,19 @@ export default class App extends Component {
 		this.setState({ timerInterval: null });
 	}
 
+	clearNotificationMessage = () => {
+		const timeoutId = setTimeout(() => {
+			this.setState({ notificationData: { isActive: false, message: '', type: null } });
+			clearTimeout(timeoutId);
+		}, 3000)
+	};
+
 	render() {
 		return (
 			<div>
 				<Blackground />
+
+				<Notification notificationData={this.state.notificationData} />
 
 				<div class='content'>
 					<div class='controls'>

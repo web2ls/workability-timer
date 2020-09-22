@@ -1,0 +1,12 @@
+.notification {
+	position: absolute;
+	top: 5%;
+	right: 5%;
+	height: auto;
+	z-index: 10;
+	border: 1px solid limegreen;
+	letter-spacing: 1px;
+	padding: 10px;
+	color: #fff;
+	transition: all 1 ease-out;
+}
