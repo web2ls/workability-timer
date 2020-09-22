@@ -72,6 +72,7 @@ export default class App extends Component {
 			const minutes = this.getRemainderMinutes(timeInSec);
 			const seconds = this.getSeconds(timeInSec);
 			this.setState({ timer: `${hours} : ${minutes} : ${seconds}` });
+			window.document.title = `${hours} : ${minutes} : ${seconds}`;
 
 			if (timeInSec === 0) {
 				this.stopTimer();
@@ -84,6 +85,7 @@ export default class App extends Component {
 	stopTimer = () => {
 		clearInterval(this.state.timerInterval);
 		this.setState({ timer: '00 : 00 : 00', timerInterval: null, remainTimeInSec: 0 });
+		window.document.title = 'Workability Timer'
 	};
 
 	pauseTimer = () => {
