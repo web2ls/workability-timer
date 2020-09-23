@@ -23,19 +23,16 @@ export default class App extends Component {
 		this.setState({ flowRun: event.target.value });
 	}
 
-	checkIsFlowRunValueValid = (event) => {
-		const newValue = event.target.value;
+	checkIsFlowRunValueValid = (newValue) => {
 		if (newValue.length > 3) {
-			console.log('too much numbers');
-			this.setState({ flowRun: 0 });
-			return;
+			return 'Too much numbers';
 		};
 
 		if (isNaN(newValue)) {
-			console.log('Is not a number value');
-			this.setState({ flowRun: 0 });
-			return;
+			return 'Is a not number value';
 		};
+
+		return true;
 	}
 
 	getHours = (seconds) => {
@@ -70,10 +67,23 @@ export default class App extends Component {
 
 	startTimer = () => {
 		if (this.state.timerInterval && this.state.remainTimeInSec) {
-			this.setState({ notificationData: { isActive: true, message: 'Timer already started', type: 'info' } });
+			this.setState({ notificationData: { isActive: true, message: 'Timer already started', type: 'alert' } });
 			this.clearNotificationMessage();
 			return;
-		}
+		};
+
+		const checkResult = this.checkIsFlowRunValueValid(this.state.flowRun);
+		if (checkResult === 'Too much numbers') {
+			this.setState({ notificationData: { isActive: true, message: checkResult, type: 'alert' } });
+			this.clearNotificationMessage();
+			return;
+		};
+
+		if (checkResult === 'Is a not number value') {
+			this.setState({ notificationData: { isActive: true, message: checkResult, type: 'alert' } });
+			this.clearNotificationMessage();
+			return;
+		};
 
 		let timeInSec;
 		if (this.state.remainTimeInSec) {
@@ -95,7 +105,7 @@ export default class App extends Component {
 			if (timeInSec === 0) {
 				this.stopTimer();
 				window.document.title = 'Go to the break man!';
-				this.setState({ notificationData: { isActive: true, message: 'Job well done dude!', type: null } });
+				this.setState({ notificationData: { isActive: true, message: 'Job well done dude!', type: 'info' } });
 				this.clearNotificationMessage();
 			}
 		}, 1000);

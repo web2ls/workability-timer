@@ -5,7 +5,7 @@ const Notification = (props) => {
         <div class='notification-wrapper'>
             {
                 props.notificationData.isActive && (
-                    <div class='notification'>
+                    <div class={`notification ${props.notificationData.type === 'info' ? 'info' : 'alert'}`}>
                         <div>{props.notificationData.message}</div>
                     </div>
                 )
